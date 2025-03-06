@@ -1,32 +1,29 @@
+# Stage 1: Build React Application
 FROM node:16 AS build
 WORKDIR /app
 
-# Copy package.json and package-lock.json
-COPY package.json package-lock.json ./
-
-COPY .env .env
-
 # Install dependencies
+COPY package.json package-lock.json ./
 RUN npm install
 
-# Copy the application source code
+# Copy the rest of the application files
 COPY . .
 
-# Build the React application for production
+# Build the application
 RUN npm run build
 
-# Stage 2: Serve the app with Nginx
+# Stage 2: Serve with Nginx
 FROM nginx:alpine
 WORKDIR /usr/share/nginx/html
 
 # Remove default Nginx static files
 RUN rm -rf ./*
 
-# Copy the React build output from the previous stage
+# Copy the built React app from the previous stage
 COPY --from=build /app/build .
 
-# Expose port 80 for Nginx
+# Expose port 80
 EXPOSE 80
 
-# Start Nginx server
+# Start Nginx
 CMD ["nginx", "-g", "daemon off;"]
