@@ -16,7 +16,7 @@ const SearchResultPage = () => {
   const [isWebSocketConnected, setIsWebSocketConnected] = useState(false);
 
   const connectWebSocket = () => {
-    const socket = new WebSocket(`ws://${process.env.REACT_APP_STOCK_BACKEND_URL}/ws/stock`);
+    const socket = new WebSocket(`wss://${process.env.REACT_APP_STOCK_BACKEND_URL}/ws/stock`);
 
     socket.onopen = () => {
       console.log('[LOG] WebSocket 연결 성공');
@@ -59,7 +59,7 @@ const SearchResultPage = () => {
   const fetchStockData = async (stockId) => {
     try {
       const response = await fetch(
-        `http://${process.env.REACT_APP_STOCK_BACKEND_URL}/api/get-popular/${stockId}`
+        `https://${process.env.REACT_APP_STOCK_BACKEND_URL}/api/get-popular/${stockId}`
       );
       if (!response.ok) {
         throw new Error(`[ERROR] 데이터 검색 실패 for stockId: ${stockId}`);
@@ -78,7 +78,7 @@ const SearchResultPage = () => {
     const fetchStockIds = async () => {
       try {
         const response = await fetch(
-          `http://${process.env.REACT_APP_STOCK_BACKEND_URL}/api/search/${query}`
+          `https://${process.env.REACT_APP_STOCK_BACKEND_URL}/api/search/${query}`
         );
         if (!response.ok) {
           throw new Error('[ERROR] Stock IDs 검색 실패');
@@ -88,7 +88,7 @@ const SearchResultPage = () => {
 
         console.log("[LOG] /api/search/"+JSON.stringify(stockIds));
         // Backend로 subscriptionList 전달
-        await fetch(`http://${process.env.REACT_APP_STOCK_BACKEND_URL}/subscriptions/update`, {
+        await fetch(`https://${process.env.REACT_APP_STOCK_BACKEND_URL}/subscriptions/update`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(stockIds),
@@ -131,7 +131,7 @@ const SearchResultPage = () => {
   const fetchRedisFallback = async (stockId) => {
     try {
       const response = await fetch(
-        `http://${process.env.REACT_APP_STOCK_BACKEND_URL}/api/redis-data/${stockId}`
+        `https://${process.env.REACT_APP_STOCK_BACKEND_URL}/api/redis-data/${stockId}`
       );
       if (!response.ok) {
         throw new Error(`[ERROR] Redis 데이터 검색 실패 for stockId: ${stockId}`);

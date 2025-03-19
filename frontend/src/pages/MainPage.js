@@ -14,7 +14,7 @@ const MainPage = () => {
   const [isWebSocketConnected, setIsWebSocketConnected] = useState(false);
 
   const connectWebSocket = () => {
-    const socket = new WebSocket(`ws://${process.env.REACT_APP_STOCK_BACKEND_URL}/ws/stock`);
+    const socket = new WebSocket(`wss://${process.env.REACT_APP_STOCK_BACKEND_URL}/ws/stock`);
 
     socket.onopen = () => {
       console.log('[LOG] WebSocket 연결 성공');
@@ -58,7 +58,7 @@ const MainPage = () => {
     try {
       //console.log("[LOG] fetchRedisFallback. Redis에서 데이터 가져옴: "+stockId);
       const response = await fetch(
-        `http://${process.env.REACT_APP_STOCK_BACKEND_URL}/api/redis-data/${stockId}`
+        `https://${process.env.REACT_APP_STOCK_BACKEND_URL}/api/redis-data/${stockId}`
       );
       if (!response.ok) {
         throw new Error(
@@ -82,7 +82,7 @@ const MainPage = () => {
   const fetchPopularData = async (stockId) => {
     try {
       const response = await fetch(
-        `http://${process.env.REACT_APP_STOCK_BACKEND_URL}/api/get-popular/${stockId}`
+        `https://${process.env.REACT_APP_STOCK_BACKEND_URL}/api/get-popular/${stockId}`
       );
       if (!response.ok) {
         throw new Error(`Popular 데이터 검색 실패 for stockId: ${stockId}`);
@@ -104,7 +104,7 @@ const MainPage = () => {
 
       try {
         const response = await fetch(
-          `http://${process.env.REACT_APP_STOCK_BACKEND_URL}/api/get-10-rankings-stockid`,
+          `https://${process.env.REACT_APP_STOCK_BACKEND_URL}/api/get-10-rankings-stockid`,
           {
             method: 'GET',
             headers: { 'Content-Type': 'application/json' },
@@ -123,7 +123,7 @@ const MainPage = () => {
 
         // Backend로 subscriptionList 전달
         await fetch(
-          `http://${process.env.REACT_APP_STOCK_BACKEND_URL}/subscriptions/update`,
+          `https://${process.env.REACT_APP_STOCK_BACKEND_URL}/subscriptions/update`,
           {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
