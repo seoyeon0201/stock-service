@@ -1,0 +1,55 @@
+- name: Delete Redis, Kafka, ALB, ArgoCD, and Secrets Store on EKS
+  hosts: localhost
+  tasks:
+    - name: Uninstall Redis Cluster using Helm
+      command: helm uninstall my-redis -n redis
+
+    - name: Uninstall Kafka Cluster using Helm
+      command: helm uninstall my-kafka -n kafka
+
+    - name: Delete Redis Namespace
+      kubernetes.core.k8s:
+        api_version: v1
+        kind: Namespace
+        name: redis
+        state: absent
+
+    - name: Delete Kafka Namespace
+      kubernetes.core.k8s:
+        api_version: v1
+        kind: Namespace
+        name: kafka
+        state: absent
+
+    - name: Uninstall AWS Load Balancer Controller
+      command: helm uninstall aws-load-balancer-controller -n kube-system
+
+    - name: Delete AWS Load Balancer Controller Service Account
+      kubernetes.core.k8s:
+        api_version: v1
+        kind: ServiceAccount
+        name: aws-load-balancer-controller
+        namespace: kube-system
+        state: absent
+
+    - name: Delete IAM role for AWS Load Balancer Controller
+      amazon.aws.iam_role:
+        name: "AWSLoadBalancerControllerIAMRole"
+        state: absent
+
+    - name: Delete ArgoCD using Helm
+      command: helm uninstall argocd -n argocd
+
+    - name: Delete ArgoCD Namespace
+      kubernetes.core.k8s:
+        api_version: v1
+        kind: Namespace
+        name: argocd
+        state: absent
+
+    - name: Uninstall Secrets Store CSI Driver
+      command: helm uninstall csi-secrets-store -n kube-system
+
+    - name: Uninstall AWS Secrets Provider
+      command: helm uninstall secrets-provider-aws -n kube-system
+
