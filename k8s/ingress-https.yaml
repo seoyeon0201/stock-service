@@ -1,0 +1,45 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: sy-ingress
+  namespace: default
+  annotations:
+    alb.ingress.kubernetes.io/scheme: internet-facing
+    alb.ingress.kubernetes.io/target-type: ip
+    alb.ingress.kubernetes.io/listen-ports: '[{"HTTP": 80}, {"HTTPS": 443}]' #HTTP,HTTPS
+    alb.ingress.kubernetes.io/ssl-redirect: '443' #HTTP -> HTTPS로 리다이렉션
+    alb.ingress.kubernetes.io/certificate-arn: arn:aws:acm:ap-northeast-3:396913715402:certificate/2e2a5846-a493-4497-a77f-c0b76fdeacf0 #SSL 인증서
+spec:
+  ingressClassName: alb
+  rules:
+    - host: seoni.store
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: stock-frontend-service
+                port:
+                  number: 80
+          - path: /api/
+            pathType: Prefix
+            backend:
+              service:
+                name: stock-backend-service
+                port:
+                  number: 8080
+          - path: /ws/stock
+            pathType: Prefix
+            backend:
+              service:
+                name: stock-backend-service
+                port:
+                  number: 8080
+          - path: /subscriptions/update
+            pathType: Prefix
+            backend:
+              service:
+                name: stock-backend-service
+                port:
+                  number: 8080

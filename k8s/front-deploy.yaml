@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: stock-frontend-deploy
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: front
+  template:
+    metadata:
+      labels:
+        app: front
+    spec:
+      containers:
+      - name: front
+        image: parkseoyeon/sy-frontend:v7  # Docker Hub에서 이미지를 가져옵니다.
+        ports:
+        - containerPort: 80
