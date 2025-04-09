@@ -14,8 +14,8 @@ module "eks" {
     }
   }
 
-  vpc_id     = "${var.default_vpc}"
-  subnet_ids = "${var.public_subnets}"
+  vpc_id     = module.vpc.vpc_id
+  subnet_ids = module.vpc.private_subnets
 
   eks_managed_node_group_defaults = {
     ami_type = "AL2_x86_64"
@@ -28,8 +28,8 @@ module "eks" {
       instance_types = ["t3.small"]
 
       min_size     = 1
-      max_size     = 3
-      desired_size = 2
+      max_size     = 2
+      desired_size = 1
     }
 
     two = {

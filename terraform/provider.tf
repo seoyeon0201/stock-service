@@ -1,9 +1,6 @@
 provider "aws" {
-    profile = "stocks_sy"
-    region = "${var.region}" 
-    access_key = "${var.access_key}"
-    secret_key = "${var.secret_key}"
-}
-data "aws_availability_zones" "azs" {
-  state = "available"
+    profile = "seoyeon2025"
+    region = var.region
+    access_key = var.aws_access_key
+    secret_key = var.aws_secret_key
 }
