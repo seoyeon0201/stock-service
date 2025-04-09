@@ -1,4 +1,4 @@
 .DS_Store
 .idea
-terraform/variables.tf
+terraform/terraform.tfvars
 k8s/config.yaml
