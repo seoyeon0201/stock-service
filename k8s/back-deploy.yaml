@@ -12,6 +12,7 @@ spec:
       labels:
         app: back
     spec:
+      serviceAccountName: sy-secret-sa
       containers:
       - name: back
         image: parkseoyeon/sy-backend:v5  # Docker Hub에서 이미지를 가져옵니다.
@@ -19,4 +20,15 @@ spec:
         - containerPort: 8080
         envFrom:
         - configMapRef:
-            name: app-config
+            name: sy-config
+        volumeMounts:
+          - name: sy-secrets-store
+            mountPath: "/mnt/secrets-store"
+            readOnly: true
+      volumes:
+        - name: sy-secrets-store
+          csi:
+            driver: secrets-store.csi.k8s.io
+            readOnly: true
+            volumeAttributes:
+              secretProviderClass: "sy-rds-secret-provider"

@@ -1,3 +1,4 @@
+## Redis
 - name: Install Redis Cluster on EKS
   hosts: localhost
   tasks:
@@ -16,13 +17,15 @@
 
     - name: Install Redis Cluster using Helm
       command: >
-        helm install my-redis bitnami/redis -n redis \
+        helm install sy-redis bitnami/redis -n redis \
           --set replica.replicaCount=3 \
           --set auth.enabled=false \
           --set volumePermissions.enabled=true \
           --set master.persistence.storageClass="gp2" \
           --set replica.persistence.storageClass="gp2" \
           --set sentinel.enabled=true
+
+## Kafka
 - name: Install Kafka Cluster on EKS
   hosts: localhost
   tasks:
@@ -41,7 +44,7 @@
 
     - name: Install Kafka Cluster using Helm
       command: >
-        helm install my-kafka -n kafka \
+        helm install sy-kafka -n kafka \
           --set volumePermissions.enabled=true \
           --set global.storageClass="gp2" \
           --set replicaCount=3 \
@@ -50,13 +53,15 @@
           --set kraft.enabled=true \
           --set listeners.client.protocol=PLAINTEXT \
           oci://registry-1.docker.io/bitnamicharts/kafka
+
+## AWS Load Balancer Controller
 - name: Setup ALB Ingress on EKS with AWS Load Balancer Controller
   hosts: localhost
   gather_facts: false
   vars:
-    aws_account_id: "396913715402"
+    aws_account_id: "128945985183"
     eks_cluster_name: "sy-cluster"
-    aws_region: "ap-northeast-3"
+    aws_region: "ap-northeast-2"
     iam_assume_policy: >
       {
         "Version": "2012-10-17",
@@ -123,6 +128,7 @@
             namespace: kube-system
             annotations:
               eks.amazonaws.com/role-arn: "{{ lb_controller_role.iam_role.arn }}"
+
     - name: Install AWS Load Balancer Controller via Helm
       ansible.builtin.shell: >
         helm repo add eks https://aws.github.io/eks-charts &&
@@ -137,6 +143,7 @@
       environment:
         HELM_EXPERIMENTAL_OCI: "1"
 
+## ArgoCD
 - name: Install ArgoCD on EKS
   hosts: localhost
   tasks:
@@ -155,9 +162,11 @@
 
     - name: Install ArgoCD using Helm
       command: >
-        helm install argocd argo/argo-cd
+        helm install sy-argocd argo/argo-cd
         --namespace argocd
         --create-namespace
+
+## AWS Secrets
 - name: Install Secrets Store CSI Driver and AWS Secrets Provider
   hosts: localhost
   tasks:
